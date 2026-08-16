@@ -1,0 +1,72 @@
+[project]
+name = "XeLauncher"
+version = "0.2.0"
+description = "Xbox 360 game launcher for Wear OS watches"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { file = "LICENSE" }
+authors = [
+    { name = "XeCrippy", email = "noreply@solace360.dev" }
+]
+classifiers = [
+    "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
+    "Environment :: Handhelds/PDA's",
+    "Programming Language :: Python :: 3",
+    "Topic :: Games/Entertainment",
+]
+# Pinned exactly, not ranged. `flet build` generates the Flutter host from the
+# installed flet-cli and writes that version into the generated pubspec, while
+# pip resolves this list separately. A range lets the two drift, and the
+# packaged app then hangs on the startup screen with no error anywhere. Bump
+# this and the flet-* dev pins together.
+dependencies = ["flet==0.84.0"]
+
+# No numpy/Pillow/httpx/cryptography here on purpose. Every megabyte of wheel
+# is a megabyte in the APK and a slower cold start on a watch CPU — the whole
+# app is stdlib sockets plus Flet.
+
+[tool.setuptools.packages.find]
+include = ["core*", "ui*", "xbdm*"]
+
+[project.optional-dependencies]
+dev = [
+    "flet-cli==0.84.0",
+    "flet-desktop==0.84.0",
+]
+
+[tool.flet]
+org = "com.solace360"
+product = "XeLauncher"
+company = "Solace360"
+copyright = "Copyright (C) 2026 Solace 360. Licensed under the GNU GPL v3 or later."
+
+[tool.flet.app]
+path = "src"
+# Black, so the splash does not flash white on an OLED watch face at night.
+splash.color = "#000000"
+splash.dark_color = "#000000"
+
+[tool.flet.app.boot_screen]
+show = true
+message = "Preparing XeLauncher…"
+
+[tool.flet.app.startup_screen]
+show = true
+message = "Starting XeLauncher…"
+
+[tool.flet.android.permission]
+# INTERNET is added by flet automatically; it is spelled out here because it is
+# the one permission this app genuinely cannot work without — xbdm is a plain
+# TCP socket on port 730.
+"android.permission.INTERNET" = true
+"android.permission.ACCESS_NETWORK_STATE" = true
+
+[tool.flet.android.feature]
+# Declaring the watch feature is what puts the app in the Wear OS launcher.
+# `false` means android:required="false", so the same APK still installs on a
+# phone. Set it to true if you want a watch-only build.
+"android.hardware.type.watch" = false
+# Wear devices have no leanback and may report an unusual touchscreen; leaving
+# these optional keeps the APK installable across watch models.
+"android.software.leanback" = false
+"android.hardware.touchscreen" = false

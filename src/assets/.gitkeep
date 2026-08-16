@@ -1,0 +1,3 @@
+App icons and images live here — Flet reads this directory as assets_dir.
+
+icon.png is the launcher icon; Wear OS uses it for the launcher and the app list.

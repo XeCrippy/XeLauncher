@@ -1,0 +1,27 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# Flet build output
+build/
+dist/
+.flet/
+
+# Local app state (console address, favourites, cached box art)
+src/storage/
+
+# Signing material — never commit a keystore
+*.keystore
+*.jks
+
+# Local build/release helpers — not part of the distribution
+scripts/
+
+# Editors / OS
+.vscode/
+.idea/
+Thumbs.db
+.DS_Store
